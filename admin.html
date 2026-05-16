@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin | DRIVOXE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6 md:p-12">
+<div class="max-w-6xl mx-auto">
+
+    <h1 class="text-3xl font-black mb-10 italic text-red-600 underline">PANEL GESTION MAHFOUD</h1>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!--                   FORMULAIRE AJOUT                     -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="bg-white p-8 rounded-3xl shadow-xl mb-12">
+        <h2 class="text-xl font-bold mb-6">➕ Ajouter un nouveau véhicule</h2>
+        <form id="addForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" id="nom" placeholder="Nom du modèle" class="border p-3 rounded-xl outline-red-500" required>
+            <input type="number" id="prix" placeholder="Prix (DA/jour)" class="border p-3 rounded-xl outline-red-500" required>
+
+            <div class="md:col-span-2">
+                <input type="text" id="img" placeholder="URL directe de l'image (.jpg, .png, .webp...)"
+                    class="border p-3 rounded-xl outline-red-500 w-full" required>
+                <div id="imgPreviewBox" class="hidden mt-3 border rounded-xl overflow-hidden h-40 bg-gray-50 flex items-center justify-center">
+                    <img id="imgPreview" src="" alt="Aperçu" class="h-full object-contain">
+                </div>
+                <p id="imgError" class="hidden text-red-500 text-sm mt-2">⚠️ Image non chargeable — vérifie que l'URL est un lien direct.</p>
+            </div>
+
+            <select id="dispo" class="border p-3 rounded-xl">
+                <option value="1">Disponible</option>
+                <option value="0">Indisponible</option>
+            </select>
+
+            <select id="carburant" class="border p-3 rounded-xl">
+                <option value="Essence">Essence</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Électrique">Électrique</option>
+                <option value="Hybride">Hybride</option>
+            </select>
+
+            <textarea id="desc" placeholder="Description détaillée" class="border p-3 rounded-xl md:col-span-2 h-28" required></textarea>
+
+            <button type="submit" id="btnSubmit"
+                class="md:col-span-2 w-full bg-red-600 text-white p-4 rounded-xl font-bold hover:bg-black transition">
+                <span id="btnText">PUBLIER SUR LE SITE CLIENT</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!--                  TABLEAU DES VOITURES                  -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="bg-white p-8 rounded-3xl shadow-xl">
+        <h2 class="text-xl font-bold mb-6">🚗 Véhicules enregistrés</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+                    <tr>
+                        <th class="px-4 py-3 rounded-l-xl">Image</th>
+                        <th class="px-4 py-3">Nom</th>
+                        <th class="px-4 py-3">Prix/jour</th>
+                        <th class="px-4 py-3">Carburant</th>
+                        <th class="px-4 py-3">Statut</th>
+                        <th class="px-4 py-3 rounded-r-xl text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="carsTableBody" class="divide-y divide-gray-100">
+                    <tr><td colspan="6" class="text-center py-8 text-gray-400">Chargement...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--                   MODAL MODIFICATION                   -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="editModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden p-4">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold">✏️ Modifier le véhicule</h2>
+            <button onclick="closeModal()" class="text-gray-400 hover:text-black text-2xl font-bold">&times;</button>
+        </div>
+
+        <form id="editForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="hidden" id="editId">
+            <input type="text" id="editNom" placeholder="Nom du modèle" class="border p-3 rounded-xl outline-red-500" required>
+            <input type="number" id="editPrix" placeholder="Prix (DA/jour)" class="border p-3 rounded-xl outline-red-500" required>
+
+            <div class="md:col-span-2">
+                <input type="text" id="editImg" placeholder="URL de l'image" class="border p-3 rounded-xl outline-red-500 w-full" required>
+                <div id="editImgPreviewBox" class="hidden mt-3 border rounded-xl overflow-hidden h-36 bg-gray-50 flex items-center justify-center">
+                    <img id="editImgPreview" src="" alt="Aperçu" class="h-full object-contain">
+                </div>
+            </div>
+
+            <select id="editDispo" class="border p-3 rounded-xl">
+                <option value="1">Disponible</option>
+                <option value="0">Indisponible</option>
+            </select>
+
+            <select id="editCarburant" class="border p-3 rounded-xl">
+                <option value="Essence">Essence</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Électrique">Électrique</option>
+                <option value="Hybride">Hybride</option>
+            </select>
+
+            <textarea id="editDesc" placeholder="Description" class="border p-3 rounded-xl md:col-span-2 h-28" required></textarea>
+
+            <button type="submit"
+                class="md:col-span-2 w-full bg-red-600 text-white p-4 rounded-xl font-bold hover:bg-black transition">
+                ENREGISTRER LES MODIFICATIONS
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+const API = 'http://localhost:5000';
+
+// ─── IMAGE PREVIEW (ajout) ─────────────────────────────────
+document.getElementById('img').addEventListener('input', function () {
+    livePreview(this.value, 'imgPreview', 'imgPreviewBox', 'imgError');
+});
+document.getElementById('editImg').addEventListener('input', function () {
+    livePreview(this.value, 'editImgPreview', 'editImgPreviewBox', null);
+});
+
+function livePreview(url, previewId, boxId, errorId) {
+    const box = document.getElementById(boxId);
+    const img = document.getElementById(previewId);
+    const err = errorId ? document.getElementById(errorId) : null;
+    if (!url.trim()) { box.classList.add('hidden'); return; }
+    img.src = url;
+    img.onload = () => { box.classList.remove('hidden'); if (err) err.classList.add('hidden'); };
+    img.onerror = () => { box.classList.add('hidden'); if (err) err.classList.remove('hidden'); };
+}
+
+// ─── CHARGER ET AFFICHER LE TABLEAU ───────────────────────
+async function loadCars() {
+    const tbody = document.getElementById('carsTableBody');
+    try {
+        const res = await fetch(`${API}/cars`);
+        const cars = await res.json();
+
+        if (cars.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-400">Aucune voiture enregistrée.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = cars.map(car => `
+            <tr class="hover:bg-gray-50 transition">
+                <td class="px-4 py-3">
+                    <img src="${car.image_url}" alt="${car.nom}" class="h-14 w-20 object-contain rounded-lg bg-gray-100">
+                </td>
+                <td class="px-4 py-3 font-bold">${car.nom}</td>
+                <td class="px-4 py-3 text-red-600 font-bold">${Number(car.prix).toLocaleString()} DA</td>
+                <td class="px-4 py-3">${car.carburant || '—'}</td>
+                <td class="px-4 py-3">
+                    <span class="px-3 py-1 rounded-full text-xs font-bold ${car.disponible ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                        ${car.disponible ? 'Disponible' : 'Indisponible'}
+                    </span>
+                </td>
+                <td class="px-4 py-3 text-center space-x-2">
+                    <button onclick='openEditModal(${JSON.stringify(car)})'
+                        class="bg-blue-500 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition">
+                        ✏️ Modifier
+                    </button>
+                    <button onclick="deleteCar(${car.id}, '${car.nom.replace(/'/g, "\\'")}')"
+                        class="bg-red-500 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition">
+                        🗑️ Supprimer
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-red-400">Erreur de connexion au serveur.</td></tr>`;
+    }
+}
+
+// ─── AJOUTER ──────────────────────────────────────────────
+document.getElementById('addForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btnSubmit');
+    const btnText = document.getElementById('btnText');
+    btn.disabled = true;
+    btn.classList.add('opacity-50');
+    btnText.innerText = "Chargement...";
+
+    const carData = {
+        nom: document.getElementById('nom').value,
+        prix: document.getElementById('prix').value,
+        description: document.getElementById('desc').value,
+        image_url: document.getElementById('img').value,
+        disponible: document.getElementById('dispo').value === '1',
+        carburant: document.getElementById('carburant').value
+    };
+
+    try {
+        const res = await fetch(`${API}/cars`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(carData)
+        });
+        if (res.ok) {
+            e.target.reset();
+            document.getElementById('imgPreviewBox').classList.add('hidden');
+            btnText.innerText = "✅ Ajoutée !";
+            setTimeout(() => { btnText.innerText = "PUBLIER SUR LE SITE CLIENT"; btn.disabled = false; btn.classList.remove('opacity-50'); }, 1500);
+            loadCars();
+        }
+    } catch {
+        alert("Erreur de connexion au serveur");
+        btnText.innerText = "REESSAYER";
+        btn.disabled = false;
+        btn.classList.remove('opacity-50');
+    }
+};
+
+// ─── OUVRIR MODAL MODIFICATION ────────────────────────────
+function openEditModal(car) {
+    document.getElementById('editId').value       = car.id;
+    document.getElementById('editNom').value      = car.nom;
+    document.getElementById('editPrix').value     = car.prix;
+    document.getElementById('editDesc').value     = car.description;
+    document.getElementById('editImg').value      = car.image_url;
+    document.getElementById('editDispo').value    = car.disponible ? '1' : '0';
+    document.getElementById('editCarburant').value = car.carburant || 'Essence';
+
+    // Afficher l'image existante dans le modal
+    livePreview(car.image_url, 'editImgPreview', 'editImgPreviewBox', null);
+
+    document.getElementById('editModal').classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('editModal').classList.add('hidden');
+}
+
+// Fermer le modal en cliquant en dehors
+document.getElementById('editModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+// ─── MODIFIER ─────────────────────────────────────────────
+document.getElementById('editForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('editId').value;
+
+    const carData = {
+        nom: document.getElementById('editNom').value,
+        prix: document.getElementById('editPrix').value,
+        description: document.getElementById('editDesc').value,
+        image_url: document.getElementById('editImg').value,
+        disponible: document.getElementById('editDispo').value === '1',
+        carburant: document.getElementById('editCarburant').value
+    };
+
+    try {
+        const res = await fetch(`${API}/cars/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(carData)
+        });
+        if (res.ok) {
+            closeModal();
+            loadCars();
+        } else {
+            alert("Erreur lors de la modification.");
+        }
+    } catch {
+        alert("Erreur de connexion au serveur");
+    }
+};
+
+// ─── SUPPRIMER ────────────────────────────────────────────
+async function deleteCar(id, nom) {
+    if (!confirm(`Supprimer "${nom}" définitivement ?`)) return;
+
+    try {
+        const res = await fetch(`${API}/cars/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            loadCars();
+        } else {
+            alert("Erreur lors de la suppression.");
+        }
+    } catch {
+        alert("Erreur de connexion au serveur");
+    }
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+loadCars();
+</script>
+
+</body>
+</html>

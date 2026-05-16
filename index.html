@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="fr">//h2CDLjtVsN3TjT4x
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRIVOXE | Location de Prestige</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0f0f13;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f0f13; }
+        ::-webkit-scrollbar-thumb { background: #e63946; border-radius: 10px; }
+
+        /* ── NOISE OVERLAY ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            background: rgba(15,15,19,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 0.5px solid #1e1e28;
+            padding: 1.2rem 2.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: all 0.3s ease;
+        }
+        nav.scrolled { padding: 0.8rem 2.5rem; background: rgba(15,15,19,0.98); }
+        .nav-logo {
+            font-size: 1.8rem; font-weight: 800; font-style: italic;
+            color: #fff; letter-spacing: -1px;
+        }
+        .nav-logo span { color: #e63946; }
+        .nav-links a {
+            color: #888; font-size: 0.75rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 2px;
+            text-decoration: none; transition: color 0.2s;
+        }
+        .nav-links a:hover { color: #fff; }
+        .nav-badge {
+            background: #e63946; color: #fff;
+            padding: 0.4rem 1rem; border-radius: 99px;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase;
+            animation: pulse-badge 2s ease-in-out infinite;
+        }
+        @keyframes pulse-badge {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(230,57,70,0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(230,57,70,0); }
+        }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            display: flex; align-items: center;
+            padding: 7rem 2.5rem 4rem;
+            position: relative; overflow: hidden;
+        }
+        .hero-grid-bg {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(230,57,70,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(230,57,70,0.05) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: grid-move 20s linear infinite;
+        }
+        @keyframes grid-move {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(60px); }
+        }
+        .hero-glow {
+            position: absolute; top: 20%; right: 5%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(230,57,70,0.15) 0%, transparent 70%);
+            animation: glow-pulse 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes glow-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+        .hero-content { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .hero-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(230,57,70,0.1); border: 0.5px solid rgba(230,57,70,0.3);
+            padding: 0.4rem 1rem; border-radius: 99px;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+            color: #e63946; text-transform: uppercase; margin-bottom: 1.5rem;
+        }
+        .hero-tag::before {
+            content: ''; width: 6px; height: 6px; border-radius: 50%;
+            background: #e63946; animation: blink 1.5s ease-in-out infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6.5rem);
+            font-weight: 800; line-height: 1.05;
+            letter-spacing: -2px; margin-bottom: 1.5rem;
+        }
+        .hero h1 .accent { color: #e63946; font-style: italic; }
+        .hero-sub {
+            color: #666; font-size: 1.05rem; max-width: 420px;
+            line-height: 1.8; margin-bottom: 2.5rem;
+        }
+        .hero-cta {
+            display: inline-flex; align-items: center; gap: 12px;
+            background: #e63946; color: #fff;
+            padding: 1rem 2rem; border-radius: 14px;
+            font-weight: 800; font-size: 0.85rem;
+            letter-spacing: 1px; text-transform: uppercase;
+            text-decoration: none;
+            transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 30px rgba(230,57,70,0.3);
+        }
+        .hero-cta:hover {
+            transform: translateY(-3px);
+            background: #c0303c;
+            box-shadow: 0 10px 40px rgba(230,57,70,0.5);
+        }
+        .hero-cta i { transition: transform 0.2s; }
+        .hero-cta:hover i { transform: translateX(4px); }
+
+        .hero-stats {
+            display: flex; gap: 2rem; margin-top: 3rem;
+        }
+        .stat-item { }
+        .stat-num {
+            font-size: 1.8rem; font-weight: 800; color: #fff;
+            line-height: 1;
+        }
+        .stat-num span { color: #e63946; }
+        .stat-label { font-size: 0.7rem; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+        .hero-img-wrap {
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-18px); }
+        }
+        .hero-img-wrap img { width: 100%; filter: drop-shadow(0 40px 60px rgba(230,57,70,0.2)); }
+        .hero-img-ring {
+            position: absolute; inset: -20px;
+            border: 0.5px solid rgba(230,57,70,0.15);
+            border-radius: 50%; animation: spin-slow 20s linear infinite;
+        }
+        .hero-img-ring::before {
+            content: ''; position: absolute; top: -4px; left: 50%;
+            width: 8px; height: 8px; background: #e63946;
+            border-radius: 50%; transform: translateX(-50%);
+        }
+        @keyframes spin-slow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+        /* ── MARQUEE ── */
+        .marquee-section {
+            border-top: 0.5px solid #1e1e28;
+            border-bottom: 0.5px solid #1e1e28;
+            background: #0a0a0e;
+            padding: 1rem 0; overflow: hidden;
+        }
+        .marquee-track {
+            display: flex; gap: 3rem;
+            animation: marquee 20s linear infinite;
+            white-space: nowrap;
+        }
+        .marquee-track:hover { animation-play-state: paused; }
+        @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+        .marquee-item {
+            display: inline-flex; align-items: center; gap: 10px;
+            font-size: 0.75rem; font-weight: 700; color: #333;
+            text-transform: uppercase; letter-spacing: 2px;
+        }
+        .marquee-item i { color: #e63946; font-size: 0.9rem; }
+
+        /* ── FLEET SECTION ── */
+        .fleet-section {
+            padding: 6rem 2.5rem;
+            max-width: 1200px; margin: 0 auto;
+        }
+        .section-tag {
+            font-size: 0.7rem; color: #e63946; font-weight: 700;
+            letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1rem;
+        }
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800; letter-spacing: -1px; margin-bottom: 0.5rem;
+        }
+        .section-line {
+            width: 50px; height: 3px; background: #e63946;
+            border-radius: 99px; margin-bottom: 3rem;
+            animation: line-grow 1s ease forwards;
+        }
+        @keyframes line-grow { from{width:0} to{width:50px} }
+
+        /* ── CAR CARDS ── */
+        #fleetContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        .car-card {
+            background: #13131a;
+            border: 0.5px solid #1e1e28;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            cursor: pointer;
+        }
+        .car-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(230,57,70,0.4);
+            box-shadow: 0 20px 60px rgba(230,57,70,0.1);
+        }
+        .car-img-wrap {
+            background: #0a0a0e;
+            padding: 1.5rem;
+            display: flex; align-items: center; justify-content: center;
+            height: 200px; overflow: hidden; position: relative;
+        }
+        .car-img-wrap img {
+            height: 100%; width: 100%;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+        .car-card:hover .car-img-wrap img { transform: scale(1.07); }
+        .car-img-glow {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 60%; height: 20px;
+            background: rgba(230,57,70,0.15);
+            filter: blur(12px);
+            border-radius: 50%;
+        }
+        .car-body { padding: 1.75rem 2rem 2rem; }
+        .car-top {
+            display: flex; justify-content: space-between;
+            align-items: flex-start; margin-bottom: 1.1rem;
+        }
+        .car-name { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.5px; }
+        .car-price { text-align: right; }
+        .car-price-num { font-size: 1.5rem; font-weight: 800; color: #e63946; line-height: 1; }
+        .car-price-label { font-size: 0.78rem; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
+        .car-desc { font-size: 1.05rem; color: #bbb; line-height: 1.9; margin-bottom: 1.5rem; }
+        .car-footer {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-top: 1.25rem; border-top: 0.5px solid #1e1e28;
+        }
+        .car-specs { display: flex; gap: 1.25rem; }
+        .car-spec {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.9rem; color: #777; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .car-spec i { font-size: 1rem; color: #e63946; }
+        .car-badge {
+            font-size: 0.78rem; font-weight: 700; padding: 6px 14px;
+            border-radius: 99px; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .badge-avail { background: rgba(62,207,142,0.1); color: #3ecf8e; border: 0.5px solid rgba(62,207,142,0.2); }
+        .badge-unavail { background: rgba(230,57,70,0.1); color: #e63946; border: 0.5px solid rgba(230,57,70,0.2); }
+
+        /* ── SKELETON LOADER ── */
+        .skeleton {
+            background: #13131a; border: 0.5px solid #1e1e28;
+            border-radius: 20px; overflow: hidden;
+        }
+        .skel-img { height: 200px; background: #1a1a22; position: relative; overflow: hidden; }
+        .skel-body { padding: 1.25rem 1.5rem 1.5rem; }
+        .skel-line {
+            height: 14px; background: #1a1a22; border-radius: 6px; margin-bottom: 10px;
+            position: relative; overflow: hidden;
+        }
+        .skel-line::after, .skel-img::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer { from{transform:translateX(-100%)} to{transform:translateX(100%)} }
+
+        /* ── FOOTER ── */
+        footer {
+            background: #0a0a0e;
+            border-top: 0.5px solid #1e1e28;
+            padding: 3rem 2.5rem;
+            text-align: center;
+        }
+        .footer-logo {
+            font-size: 2rem; font-weight: 800; font-style: italic;
+            color: #fff; letter-spacing: -1px; margin-bottom: 0.5rem;
+        }
+        .footer-logo span { color: #e63946; }
+        footer p { font-size: 0.75rem; color: #333; letter-spacing: 1px; }
+        footer p b { color: #e63946; font-weight: 700; }
+
+        /* ── CARD ENTRANCE ANIMATION ── */
+        .car-card { opacity: 0; transform: translateY(30px); }
+        .car-card.visible {
+            animation: card-in 0.6s ease forwards;
+        }
+        @keyframes card-in {
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav id="navbar">
+        <div class="nav-logo">DRIV<span>O</span>XE.</div>
+        <div class="nav-links hidden md:flex" style="gap: 2.5rem;">
+            <a href="#">Accueil</a>
+            <a href="#flotte">La Flotte</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="nav-badge">Algérie</div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-grid-bg"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-content" style="display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center;">
+
+            <div data-aos="fade-right" data-aos-duration="900">
+                <div class="hero-tag">Location Prestige Algérie</div>
+                <h1>Votre Voyage,<br><span class="accent">Votre Liberté.</span></h1>
+                <p class="hero-sub">Découvrez une sélection exclusive de véhicules haut de gamme pour vos besoins personnels et professionnels.</p>
+                <a href="#flotte" class="hero-cta">
+                    Voir la collection <i class="fas fa-arrow-right"></i>
+                </a>
+                <div class="hero-stats" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-item">
+                        <div class="stat-num" id="counter-cars">0<span>+</span></div>
+                        <div class="stat-label">Véhicules</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-num" id="counter-wilayas">0<span>+</span></div>
+                        <div class="stat-label">Wilayas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-num" id="counter-clients">0<span>+</span></div>
+                        <div class="stat-label">Clients satisfaits</div>
+                    </div>
+                </div>
+            </div>
+
+            <div data-aos="zoom-in" data-aos-delay="200" data-aos-duration="900">
+                <div class="hero-img-wrap">
+                    <div class="hero-img-ring"></div>
+                    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=800" alt="Voiture prestige">
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee-section">
+        <div class="marquee-track" id="marqueeTrack">
+            <span class="marquee-item"><i class="fas fa-star"></i> Mercedes-Benz</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> BMW</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> Audi</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> Porsche</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> Range Rover</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> Lamborghini</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> Ferrari</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> Maserati</span>
+            <!-- duplicate for seamless loop -->
+            <span class="marquee-item"><i class="fas fa-star"></i> Mercedes-Benz</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> BMW</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> Audi</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> Porsche</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> Range Rover</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> Lamborghini</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> Ferrari</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> Maserati</span>
+        </div>
+    </div>
+
+    <!-- FLEET -->
+    <section id="flotte" class="fleet-section">
+        <div data-aos="fade-up">
+            <div class="section-tag">Notre collection</div>
+            <h2 class="section-title">Flotte Exclusive</h2>
+            <div class="section-line"></div>
+        </div>
+        <div id="fleetContainer">
+            <!-- Skeleton loaders -->
+            <div class="skeleton"><div class="skel-img"></div><div class="skel-body"><div class="skel-line" style="width:60%"></div><div class="skel-line" style="width:40%"></div><div class="skel-line"></div><div class="skel-line" style="width:80%"></div></div></div>
+            <div class="skeleton"><div class="skel-img"></div><div class="skel-body"><div class="skel-line" style="width:60%"></div><div class="skel-line" style="width:40%"></div><div class="skel-line"></div><div class="skel-line" style="width:80%"></div></div></div>
+            <div class="skeleton"><div class="skel-img"></div><div class="skel-body"><div class="skel-line" style="width:60%"></div><div class="skel-line" style="width:40%"></div><div class="skel-line"></div><div class="skel-line" style="width:80%"></div></div></div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contact">
+        <div class="footer-logo">DRIV<span>O</span>XE.</div>
+        <p style="margin-bottom:0.5rem">Ce site a été créé par <b>Mahfoud</b></p>
+        <p>&copy; 2026 Drivoxe Algérie. Tous droits réservés.</p>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // ── AOS INIT ──
+        AOS.init({ duration: 800, once: false, mirror: true, easing: 'ease-out-cubic' });
+
+        // ── NAVBAR SCROLL ──
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+        });
+
+        // ── COUNTER ANIMATION ──
+        function animateCounter(el, target, duration = 1800) {
+            let start = 0;
+            const step = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += step;
+                if (start >= target) { el.childNodes[0].nodeValue = target; clearInterval(timer); return; }
+                el.childNodes[0].nodeValue = Math.floor(start);
+            }, 16);
+        }
+
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    animateCounter(document.getElementById('counter-cars'), 20);
+                    animateCounter(document.getElementById('counter-wilayas'), 48);
+                    animateCounter(document.getElementById('counter-clients'), 500);
+                    counterObserver.disconnect();
+                }
+            });
+        });
+        counterObserver.observe(document.getElementById('counter-cars'));
+
+        // ── CARD ENTRANCE ON SCROLL ──
+        function observeCards() {
+            const cards = document.querySelectorAll('.car-card');
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach((e, i) => {
+                    if (e.isIntersecting) {
+                        setTimeout(() => e.target.classList.add('visible'), i * 100);
+                        obs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            cards.forEach(c => obs.observe(c));
+        }
+
+        // Override fetchCars to use dark card template + trigger animations
+        async function fetchCars() {
+            try {
+                const response = await fetch('http://localhost:5000/cars');
+                const data = await response.json();
+                const container = document.getElementById('fleetContainer');
+                if (!container) return;
+
+                if (data.length === 0) {
+                    container.innerHTML = "<p style='color:#444;text-align:center;grid-column:1/-1;padding:3rem'>Aucune voiture disponible pour le moment.</p>";
+                    return;
+                }
+
+                container.innerHTML = data.map(car => `
+                    <div class="car-card" data-aos="fade-up">
+                        <div class="car-img-wrap">
+                            <img src="${car.image_url}" alt="${car.nom}" loading="lazy">
+                            <div class="car-img-glow"></div>
+                        </div>
+                        <div class="car-body">
+                            <div class="car-top">
+                                <div class="car-name">${car.nom}</div>
+                                <div class="car-price">
+                                    <div class="car-price-num">${Number(car.prix).toLocaleString()} DA</div>
+                                    <div class="car-price-label">par jour</div>
+                                </div>
+                            </div>
+                            <p class="car-desc">${car.description}</p>
+                            <div class="car-footer">
+                                <div class="car-specs">
+                                    <div class="car-spec"><i class="fas fa-gas-pump"></i> ${car.carburant || 'Essence'}</div>
+                                    <div class="car-spec"><i class="fas fa-cog"></i> Auto</div>
+                                </div>
+                                <span class="car-badge ${car.disponible ? 'badge-avail' : 'badge-unavail'}">
+                                    ${car.disponible ? '● Disponible' : '● Indisponible'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                AOS.refresh();
+                observeCards();
+
+            } catch (error) {
+                console.error("Erreur:", error);
+                document.getElementById('fleetContainer').innerHTML =
+                    "<p style='color:#e63946;text-align:center;grid-column:1/-1;padding:3rem'><i class='fas fa-exclamation-triangle'></i> Erreur de connexion au serveur.</p>";
+            }
+        }
+
+        fetchCars();
+    </script>
+</body>
+</html>
